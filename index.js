@@ -6,30 +6,31 @@ const express = require('express'),
     find = require('local-devices'),
     wol = require('wol');
 
-httpServer.listen(9090, function () {
+httpServer.listen(9090, function() {
     console.log('listening on *:9090');
 });
 
-const corsOptions = {
-    origin: 'http://localhost:3000'
-};
+// const corsOptions = {
+//     origin: 'http://localhost:3000'
+// };
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 
-app.get('/devices', function (req, res) {
+app.get('/devices', function(req, res) {
 
-    find().then(function (devices) {
+    find().then(function(devices) {
         console.dir(devices);
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(devices));
     });
 });
 
-app.post('/check-if-it-is-awake', function (req, res) {
-    find().then(function (devices) {
+app.post('/check-if-it-is-awake', function(req, res) {
+    find().then(function(devices) {
         let result = devices.filter(device => device.mac == req.body.mac);
         console.log(result);
         if (result.length > 0)
@@ -39,9 +40,9 @@ app.post('/check-if-it-is-awake', function (req, res) {
     });
 });
 
-app.post('/wakeup', function (req, res) {
+app.post('/wakeup', function(req, res) {
     console.log(req.body);
-    wol.wake(req.body.mac, function (error, result) {
+    wol.wake(req.body.mac, function(error, result) {
         if (error) {
             res.send(JSON.stringify({ error: error }));
         }
